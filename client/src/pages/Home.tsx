@@ -1,17 +1,23 @@
+import { useAuth } from "@/_core/hooks/useAuth";
 import LeadDetailPanel from "@/components/LeadDetailPanel";
 import LeadTable from "@/components/LeadTable";
 import { Button } from "@/components/ui/button";
-import { Lead, mockLeads } from "@/lib/mock-data";
+import { Lead } from "@/lib/mock-data";
+import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { Filter, Plus, UploadCloud } from "lucide-react";
+import { Filter, Loader2, Plus, UploadCloud } from "lucide-react";
 import { useState } from "react";
 
 export default function Home() {
+  const { user, isAuthenticated } = useAuth();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "enriched" | "processing" | "failed">("all");
 
+  // Fetch leads from database
+  const { data: allLeads, isLoading } = trpc.leads.list.useQuery();
+
   // Filter leads based on active tab
-  const filteredLeads = mockLeads.filter((lead) => {
+  const filteredLeads = (allLeads || []).filter((lead) => {
     if (activeTab === "all") return true;
     return lead.status === activeTab;
   });

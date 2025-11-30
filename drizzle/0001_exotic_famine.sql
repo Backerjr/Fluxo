@@ -1,0 +1,23 @@
+CREATE TABLE `leads` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`firstName` varchar(128),
+	`lastName` varchar(128),
+	`title` varchar(255),
+	`company` varchar(255) NOT NULL,
+	`companyLogo` text,
+	`avatar` text,
+	`status` enum('enriched','processing','failed','pending') NOT NULL DEFAULT 'pending',
+	`confidence` int NOT NULL DEFAULT 0,
+	`email` varchar(320),
+	`phone` varchar(50),
+	`linkedin` text,
+	`location` varchar(255),
+	`techStack` text,
+	`aiInsight` text,
+	`mutualConnection` varchar(255),
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	`userId` int NOT NULL,
+	CONSTRAINT `leads_id` PRIMARY KEY(`id`)
+);

@@ -123,7 +123,7 @@ export default function LeadTable({ leads, onLeadClick }: LeadTableProps) {
             {/* Name Column */}
             <div className="flex items-center gap-3">
               <Avatar className="h-8 w-8 border border-border/50">
-                <AvatarImage src={lead.avatar} />
+                <AvatarImage src={lead.avatar ?? undefined} />
                 <AvatarFallback>{lead.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col min-w-0">

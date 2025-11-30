@@ -28,7 +28,7 @@ interface LeadDetailPanelProps {
   onClose: () => void;
 }
 
-function CopyButton({ text, label }: { text?: string; label: string }) {
+function CopyButton({ text, label }: { text?: string | null; label: string }) {
   if (!text) return null;
   
   return (
@@ -71,7 +71,7 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
         <div className="flex items-start justify-between p-6 border-b border-border/50">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 border-2 border-border shadow-sm">
-              <AvatarImage src={lead.avatar} />
+              <AvatarImage src={lead.avatar ?? undefined} />
               <AvatarFallback className="text-lg">{lead.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
@@ -129,7 +129,7 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs text-muted-foreground">Email Address</span>
-                      <span className="text-sm font-medium">{lead.email || "Not available"}</span>
+                      <span className="text-sm font-medium">{lead.email ?? "Not available"}</span>
                     </div>
                   </div>
                   <CopyButton text={lead.email} label="email" />
@@ -142,7 +142,7 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs text-muted-foreground">Phone Number</span>
-                      <span className="text-sm font-medium">{lead.phone || "Not available"}</span>
+                      <span className="text-sm font-medium">{lead.phone ?? "Not available"}</span>
                     </div>
                   </div>
                   <CopyButton text={lead.phone} label="phone" />
@@ -155,7 +155,7 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs text-muted-foreground">Location</span>
-                      <span className="text-sm font-medium">{lead.location || "Unknown"}</span>
+                      <span className="text-sm font-medium">{lead.location ?? "Unknown"}</span>
                     </div>
                   </div>
                 </div>
