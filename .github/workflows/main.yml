@@ -1,0 +1,56 @@
+name: Production CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  quality-check:
+    name: 🛡️ Quality & Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: 🧹 Lint Check
+        run: npm run lint
+        # Fails if code style doesn't match your "Precision" aesthetic
+
+      - name: 🏗️ Build Verification
+        run: npm run build
+        # Ensures React + Tailwind actually compile without errors
+
+      - name: 🧪 Unit Tests
+        run: npm test
+        # Runs the 6 passing tests you mentioned
+
+  security-scan:
+    name: 🚨 Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm audit --audit-level=high
+        # Blocks the build if high-severity vulnerabilities are found
+
+  # Optional: Deploy only if Quality & Security pass
+  # deploy:
+  #   needs: [quality-check, security-scan]
+  #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy to Vercel/Netlify
+  #       run: echo "Add deployment steps here"
