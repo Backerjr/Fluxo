@@ -1,0 +1,6 @@
+first_name,last_name,company,email,phone,linkedin_url,title,confidence_score,data_sources,enrichment_status
+John,Smith,Salesforce,,,,,0.0,,failed
+Sarah,Johnson,HubSpot,,,,,0.0,,failed
+Michael,Chen,ZoomInfo,,,,,0.0,,failed
+Emily,Rodriguez,Gong,,,,,0.0,,failed
+David,Williams,Outreach,,,,,0.0,,failed
