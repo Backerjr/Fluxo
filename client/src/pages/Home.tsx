@@ -1,25 +1,79 @@
+import LeadDetailPanel from "@/components/LeadDetailPanel";
+import LeadTable from "@/components/LeadTable";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { Lead, mockLeads } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
+import { Filter, Plus, UploadCloud } from "lucide-react";
+import { useState } from "react";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [activeTab, setActiveTab] = useState<"all" | "enriched" | "processing" | "failed">("all");
+
+  // Filter leads based on active tab
+  const filteredLeads = mockLeads.filter((lead) => {
+    if (activeTab === "all") return true;
+    return lead.status === activeTab;
+  });
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="container max-w-[1600px] py-8 space-y-6 animate-in fade-in duration-500">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Enrichment Queue</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage and monitor your AI-driven lead enrichment pipelines.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="gap-2">
+            <UploadCloud className="h-4 w-4" />
+            Import CSV
+          </Button>
+          <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20">
+            <Plus className="h-4 w-4" />
+            Add New Lead
+          </Button>
+        </div>
+      </div>
+
+      {/* Controls & Filters */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center p-1 bg-muted/50 rounded-lg border border-border/50">
+          {(["all", "enriched", "processing", "failed"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={cn(
+                "px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200 capitalize",
+                activeTab === tab
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+            <Filter className="mr-2 h-4 w-4" />
+            Filter
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Table */}
+      <LeadTable leads={filteredLeads} onLeadClick={setSelectedLead} />
+
+      {/* Detail Panel Overlay */}
+      <LeadDetailPanel
+        lead={selectedLead}
+        isOpen={!!selectedLead}
+        onClose={() => setSelectedLead(null)}
+      />
     </div>
   );
 }
