@@ -63,21 +63,21 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
       {/* Panel */}
       <div
         className={cn(
-          "fixed inset-y-0 right-0 w-[480px] bg-card border-l border-border shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col",
+          "fixed inset-y-0 right-0 w-full lg:w-[480px] bg-card border-l border-border shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-border/50">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-border shadow-sm">
+        <div className="flex items-start justify-between p-4 lg:p-6 border-b border-border/50">
+          <div className="flex items-center gap-3 lg:gap-4 flex-1 min-w-0">
+            <Avatar className="h-12 w-12 lg:h-16 lg:w-16 border-2 border-border shadow-sm flex-shrink-0">
               <AvatarImage src={lead.avatar ?? undefined} />
-              <AvatarFallback className="text-lg">{lead.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-base lg:text-lg">{lead.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div>
-              <h2 className="text-xl font-semibold text-foreground">{lead.name}</h2>
-              <div className="flex items-center gap-2 text-muted-foreground mt-1">
-                <Briefcase className="h-3.5 w-3.5" />
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg lg:text-xl font-semibold text-foreground truncate">{lead.name}</h2>
+              <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm">
+                <Briefcase className="h-3 w-3 lg:h-3.5 lg:w-3.5 flex-shrink-0" />
                 <span className="text-sm">{lead.title}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground mt-0.5">
@@ -86,15 +86,15 @@ export default function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPan
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full flex-shrink-0">
             <X className="h-5 w-5" />
           </Button>
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-6 space-y-8">
+          <div className="p-4 lg:p-6 space-y-6 lg:space-y-8">
             {/* AI Insights Block - The "Hero" Feature */}
-            <div className="relative overflow-hidden rounded-xl border border-chart-1/20 bg-gradient-to-br from-chart-1/5 to-transparent p-5">
+            <div className="relative overflow-hidden rounded-xl border border-chart-1/20 bg-gradient-to-br from-chart-1/5 to-transparent p-4 lg:p-5">
               <div className="absolute top-0 right-0 p-3 opacity-20">
                 <Sparkles className="h-24 w-24 text-chart-1" />
               </div>

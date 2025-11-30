@@ -97,111 +97,159 @@ function ConfidenceRing({ score }: { score: number }) {
 
 export default function LeadTable({ leads, onLeadClick }: LeadTableProps) {
   return (
-    <div className="w-full overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      {/* Table Header */}
-      <div className="grid grid-cols-[2fr_1.5fr_1.5fr_1fr_1fr_1fr_50px] gap-4 px-6 py-3 border-b border-border bg-muted/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        <div>Name</div>
-        <div>Company</div>
-        <div>Title</div>
-        <div>Status</div>
-        <div>Confidence</div>
-        <div>Updated</div>
-        <div></div>
-      </div>
-
-      {/* Table Body */}
-      <div className="divide-y divide-border/50">
+    <div className="border border-border/50 rounded-lg overflow-hidden bg-card shadow-sm">
+      {/* Mobile Card View */}
+      <div className="lg:hidden divide-y divide-border/50">
         {leads.map((lead) => (
           <div
             key={lead.id}
             onClick={() => onLeadClick(lead)}
-            className="group grid grid-cols-[2fr_1.5fr_1.5fr_1fr_1fr_1fr_50px] gap-4 px-6 py-3 items-center hover:bg-muted/50 cursor-pointer transition-all duration-200 relative"
+            className="p-4 hover:bg-muted/50 cursor-pointer transition-colors active:bg-muted"
           >
-            {/* Hover Lift Effect */}
-            <div className="absolute inset-0 border-l-2 border-transparent group-hover:border-primary transition-colors" />
-
-            {/* Name Column */}
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8 border border-border/50">
+            <div className="flex items-start gap-3 mb-3">
+              <Avatar className="h-10 w-10 border border-border/50">
                 <AvatarImage src={lead.avatar ?? undefined} />
                 <AvatarFallback>{lead.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                  {lead.name}
-                </span>
-                <span className="text-xs text-muted-foreground truncate">
-                  {lead.email || "No email found"}
-                </span>
-              </div>
-            </div>
-
-            {/* Company Column */}
-            <div className="flex items-center gap-2">
-              {lead.companyLogo ? (
-                <img
-                  src={lead.companyLogo}
-                  alt={lead.company}
-                  className="h-5 w-5 rounded-sm object-contain opacity-80"
-                />
-              ) : (
-                <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground">
-                  {lead.company.charAt(0)}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-medium text-foreground truncate">
+                    {lead.name}
+                  </span>
+                  <StatusPill status={lead.status} />
                 </div>
-              )}
-              <span className="text-sm text-foreground/90 truncate">
-                {lead.company}
-              </span>
-            </div>
-
-            {/* Title Column */}
-            <div className="text-sm text-muted-foreground truncate">
-              {lead.title}
-            </div>
-
-            {/* Status Column */}
-            <div>
-              <StatusPill status={lead.status} />
-            </div>
-
-            {/* Confidence Column */}
-            <div>
+                <div className="text-xs text-muted-foreground truncate mb-1">
+                  {lead.title || "No title"}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {lead.companyLogo && (
+                    <img
+                      src={lead.companyLogo}
+                      alt={lead.company}
+                      className="h-4 w-4 rounded-sm object-contain"
+                    />
+                  )}
+                  <span className="truncate">{lead.company}</span>
+                </div>
+              </div>
               <ConfidenceRing score={lead.confidence} />
             </div>
-
-            {/* Updated Column */}
-            <div className="text-xs text-muted-foreground">
-              {lead.lastUpdated}
-            </div>
-
-            {/* Actions Column */}
-            <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                    <Zap className="mr-2 h-4 w-4" /> Enrich Now
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            {lead.email && (
+              <div className="text-xs text-muted-foreground truncate">
+                {lead.email}
+              </div>
+            )}
           </div>
         ))}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
+        {/* Table Header */}
+        <div className="grid grid-cols-[2fr_1.5fr_1.5fr_1fr_1fr_1fr_50px] gap-4 px-6 py-3 border-b border-border bg-muted/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div>Name</div>
+          <div>Company</div>
+          <div>Title</div>
+          <div>Status</div>
+          <div>Confidence</div>
+          <div>Updated</div>
+          <div></div>
+        </div>
+
+        {/* Table Body */}
+        <div className="divide-y divide-border/50">
+          {leads.map((lead) => (
+            <div
+              key={lead.id}
+              onClick={() => onLeadClick(lead)}
+              className="group grid grid-cols-[2fr_1.5fr_1.5fr_1fr_1fr_1fr_50px] gap-4 px-6 py-3 items-center hover:bg-muted/50 cursor-pointer transition-all duration-200 relative"
+            >
+              {/* Hover Lift Effect */}
+              <div className="absolute inset-0 border-l-2 border-transparent group-hover:border-primary transition-colors" />
+
+              {/* Name Column */}
+              <div className="flex items-center gap-3">
+                <Avatar className="h-8 w-8 border border-border/50">
+                  <AvatarImage src={lead.avatar ?? undefined} />
+                  <AvatarFallback>{lead.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                    {lead.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {lead.email || "No email found"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Company Column */}
+              <div className="flex items-center gap-2">
+                {lead.companyLogo ? (
+                  <img
+                  src={lead.companyLogo}
+                  alt={lead.company}
+                    className="h-5 w-5 rounded-sm object-contain opacity-80"
+                  />
+                ) : (
+                  <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground">
+                    {lead.company.charAt(0)}
+                  </div>
+                )}
+                <span className="text-sm text-foreground/90 truncate">
+                  {lead.company}
+                </span>
+              </div>
+
+              {/* Title Column */}
+              <div className="text-sm text-muted-foreground truncate">
+                {lead.title}
+              </div>
+
+              {/* Status Column */}
+              <div>
+                <StatusPill status={lead.status} />
+              </div>
+
+              {/* Confidence Column */}
+              <div>
+                <ConfidenceRing score={lead.confidence} />
+              </div>
+
+              {/* Updated Column */}
+              <div className="text-xs text-muted-foreground">
+                {lead.lastUpdated}
+              </div>
+
+              {/* Actions Column */}
+              <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                      <Zap className="mr-2 h-4 w-4" /> Enrich Now
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

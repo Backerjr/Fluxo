@@ -4,8 +4,10 @@ import {
   Command,
   Database,
   LayoutGrid,
+  Menu,
   Settings,
   Users,
+  X,
   Zap
 } from "lucide-react";
 import { useState } from "react";
@@ -44,18 +46,29 @@ function SidebarItem({ icon: Icon, label, href, isActive }: SidebarItemProps) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden font-sans selection:bg-primary/20">
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={cn(
-          "flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-in-out z-30",
-          isCollapsed ? "w-[60px]" : "w-[240px]"
+          "flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-in-out z-50",
+          "fixed lg:static inset-y-0 left-0",
+          isCollapsed ? "w-[60px]" : "w-[240px]",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Brand */}
-        <div className="flex h-14 items-center px-4 border-b border-sidebar-border/50">
+        <div className="flex h-14 items-center justify-between px-4 border-b border-sidebar-border/50">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-lg shadow-primary/20">
               <span className="font-bold text-lg">F</span>
@@ -66,6 +79,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
             )}
           </div>
+          {/* Mobile Close Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden h-8 w-8"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Navigation */}
@@ -134,9 +156,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-background relative">
         {/* Global Command Bar */}
-        <header className="h-14 border-b border-border/40 bg-background/80 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
+        <header className="h-14 border-b border-border/40 bg-background/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-6 sticky top-0 z-20">
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden h-9 w-9 mr-2"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
           {/* Breadcrumbs / Context */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
             <span className="hover:text-foreground cursor-pointer transition-colors">Fluxo</span>
             <span className="text-border">/</span>
             <span className="text-foreground font-medium">Enrichment Queue</span>
@@ -145,14 +176,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Command Search & Status */}
           <div className="flex items-center gap-4">
             {/* Command Search */}
-            <div className="relative group">
+            <div className="relative group hidden md:block">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Command className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
               </div>
               <input
                 type="text"
                 placeholder="Search or type command..."
-                className="h-9 w-64 rounded-md bg-secondary/50 border border-border/50 pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-ring/50 focus:bg-secondary transition-all"
+                className="h-9 w-48 lg:w-64 rounded-md bg-secondary/50 border border-border/50 pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-ring/50 focus:bg-secondary transition-all"
               />
               <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
                 <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -161,10 +192,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
 
-            <Separator orientation="vertical" className="h-6 bg-border/50" />
+            <Separator orientation="vertical" className="h-6 bg-border/50 hidden md:block" />
 
             {/* Status Indicators */}
-            <div className="flex items-center gap-4 text-xs font-medium">
+            <div className="flex items-center gap-2 lg:gap-4 text-xs font-medium">
               <div className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-help">
                 <Activity className="h-3.5 w-3.5 text-chart-3" />
                 <span>API: 24ms</span>

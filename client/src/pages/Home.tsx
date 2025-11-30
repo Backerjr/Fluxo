@@ -23,7 +23,7 @@ export default function Home() {
   });
 
   return (
-    <div className="container max-w-[1600px] py-8 space-y-6 animate-in fade-in duration-500">
+    <div className="container max-w-[1600px] py-4 lg:py-8 space-y-4 lg:space-y-6 animate-in fade-in duration-500">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -32,27 +32,27 @@ export default function Home() {
             Manage and monitor your AI-driven lead enrichment pipelines.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2">
+        <div className="flex items-center gap-2 lg:gap-3">
+          <Button variant="outline" className="gap-2" size="sm">
             <UploadCloud className="h-4 w-4" />
-            Import CSV
+            <span className="hidden sm:inline">Import CSV</span>
           </Button>
-          <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20">
+          <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20" size="sm">
             <Plus className="h-4 w-4" />
-            Add New Lead
+            <span className="hidden sm:inline">Add New Lead</span>
           </Button>
         </div>
       </div>
 
       {/* Controls & Filters */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center p-1 bg-muted/50 rounded-lg border border-border/50">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center p-1 bg-muted/50 rounded-lg border border-border/50 w-full sm:w-auto overflow-x-auto">
           {(["all", "enriched", "processing", "failed"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200 capitalize",
+                "px-3 lg:px-4 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-all duration-200 capitalize whitespace-nowrap",
                 activeTab === tab
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-background/50"
