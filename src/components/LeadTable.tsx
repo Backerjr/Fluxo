@@ -1,4 +1,6 @@
 import { cn } from "@/lib/utils";
+import { Lead } from "@shared/types";
+import { formatDistanceToNow } from "date-fns";
 import {
   AlertCircle,
   CheckCircle2,
@@ -9,7 +11,6 @@ import {
   Zap
 } from "lucide-react";
 import { useState } from "react";
-import { Lead } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -24,6 +25,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 interface LeadTableProps {
   leads: Lead[];
   onLeadClick: (lead: Lead) => void;
+}
+
+function getRelativeTime(date: Date): string {
+  try {
+    return formatDistanceToNow(new Date(date), { addSuffix: true });
+  } catch {
+    return "Recently";
+  }
 }
 
 function StatusPill({ status }: { status: Lead["status"] }) {
@@ -218,7 +227,7 @@ export default function LeadTable({ leads, onLeadClick }: LeadTableProps) {
 
               {/* Updated Column */}
               <div className="text-xs text-muted-foreground">
-                {lead.lastUpdated}
+                {getRelativeTime(lead.updatedAt)}
               </div>
 
               {/* Actions Column */}

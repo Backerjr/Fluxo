@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Lead } from "@shared/types";
 import {
   Briefcase,
   Building2,
@@ -14,7 +15,6 @@ import {
   Twitter,
   X
 } from "lucide-react";
-import { Lead } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";

@@ -2,9 +2,9 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import LeadDetailPanel from "@/components/LeadDetailPanel";
 import LeadTable from "@/components/LeadTable";
 import { Button } from "@/components/ui/button";
-import { Lead } from "@/lib/mock-data";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
+import { Lead } from "@shared/types";
 import { Filter, Loader2, Plus, UploadCloud } from "lucide-react";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ export default function Home() {
   const { data: allLeads, isLoading } = trpc.leads.list.useQuery();
 
   // Filter leads based on active tab
-  const filteredLeads = (allLeads || []).filter((lead) => {
+  const filteredLeads = ((allLeads || []) as Lead[]).filter((lead) => {
     if (activeTab === "all") return true;
     return lead.status === activeTab;
   });
