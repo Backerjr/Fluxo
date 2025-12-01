@@ -1,13 +1,13 @@
-diff --git a/esm/index.js b/esm/index.js
-index c83bc63a2c10431fb62e25b7d490656a3796f301..bcae513cc20a4be6c38dc116e0b8d9bacda62b5b 100644
---- a/esm/index.js
-+++ b/esm/index.js
-@@ -338,6 +338,23 @@ const Switch = ({ children, location }) => {
+diff --git a/node_modules/wouter/src/index.js b/node_modules/wouter/src/index.js
+index 3c759dc..e302832 100644
+--- a/node_modules/wouter/src/index.js
++++ b/node_modules/wouter/src/index.js
+@@ -320,6 +320,23 @@ export const Switch = ({ children, location }) => {
    const router = useRouter();
    const [originalLocation] = useLocationFromRouter(router);
  
 +  // Collect all route paths to window object
-+  if (typeof window !== 'undefined') {
++  if (typeof window !== "undefined") {
 +    if (!window.__WOUTER_ROUTES__) {
 +      window.__WOUTER_ROUTES__ = [];
 +    }
