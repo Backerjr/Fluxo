@@ -29,6 +29,15 @@ const injectAnalytics = () => {
 
 const queryClient = new QueryClient();
 
+const getApiUrl = () => {
+  if (typeof window !== "undefined") {
+    // In browser, use current origin with /api/trpc path
+    return `${window.location.origin}/api/trpc`;
+  }
+  // Fallback for SSR or build time (should not reach here in client-only app)
+  return "/api/trpc";
+};
+
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
@@ -59,7 +68,7 @@ queryClient.getMutationCache().subscribe(event => {
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: getApiUrl(),
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
