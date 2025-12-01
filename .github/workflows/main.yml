@@ -19,9 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          # Removed cache-dependency-path to avoid path errors. 
-          # Auto-detects package-lock.json in root.
+          cache: 'pnpm'
+
+      - name: Enable Corepack (pnpm)
+        run: corepack enable
 
       - name: Locate Project Root
         id: locate-root
@@ -39,7 +40,7 @@ jobs:
       - name: Install Dependencies
         run: |
           echo '📦 Installing dependencies...'
-          npm install
+          pnpm install --frozen-lockfile
         working-directory: ${{ env.PROJECT_ROOT }}
 
       - name: Lint Code
