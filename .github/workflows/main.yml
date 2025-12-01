@@ -24,8 +24,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          # Tell the cache action where the lockfile lives
-          cache-dependency-path: client/package-lock.json
+          # DELETE THIS LINE IF IT EXISTS:
+          # cache-dependency-path: client/package-lock.json
+          # OR CHANGE IT TO:
+          cache-dependency-path: package-lock.json
 
       - name: Install Dependencies
         run: npm ci
