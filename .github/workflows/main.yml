@@ -15,42 +15,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
-      - name: Locate Project Root
-        id: locate-root
-        shell: bash
-        run: |
-          echo '🔍 Scanning for package.json...'
-          TARGET_DIR=$(find . -name package.json -not -path '*/node_modules/*' -printf '%h\n' | head -n 1)
-          if [ -z "$TARGET_DIR" ]; then
-            echo '❌ Critical: No package.json found anywhere.'
-            exit 1
-          fi
-          echo "✅ Found project root at: $TARGET_DIR"
-          echo "PROJECT_ROOT=$TARGET_DIR" >> $GITHUB_ENV
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: |
-          echo '📦 Installing dependencies...'
-          pnpm install --frozen-lockfile
-        working-directory: ${{ env.PROJECT_ROOT }}
+        run: npm ci
 
       - name: Lint Code
         run: npm run lint --if-present
-        working-directory: ${{ env.PROJECT_ROOT }}
 
       - name: Build Project
         run: npm run build
-        working-directory: ${{ env.PROJECT_ROOT }}
 
       - name: Run Unit Tests
         run: npm test --if-present
-        working-directory: ${{ env.PROJECT_ROOT }}
