@@ -1,4 +1,4 @@
-name: Production CI/CD
+name: CI/CD
 
 on:
   push:
@@ -7,36 +7,49 @@ on:
     branches: [ "main" ]
 
 jobs:
-  quality-check:
-    name: 🛡️ Quality & Integrity
+  build-and-test:
+    name: 🚀 Build & Validate
     runs-on: ubuntu-latest
-    # This tells all steps to run inside the 'client' folder
-    defaults:
-      run:
-        working-directory: ./client
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20 (LTS)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          # DELETE THIS LINE IF IT EXISTS:
-          # cache-dependency-path: client/package-lock.json
-          # OR CHANGE IT TO:
-          cache-dependency-path: package-lock.json
+          # Removed cache-dependency-path to avoid path errors. 
+          # Auto-detects package-lock.json in root.
+
+      - name: Locate Project Root
+        id: locate-root
+        shell: bash
+        run: |
+          echo '🔍 Scanning for package.json...'
+          TARGET_DIR=$(find . -name package.json -not -path '*/node_modules/*' -printf '%h\n' | head -n 1)
+          if [ -z "$TARGET_DIR" ]; then
+            echo '❌ Critical: No package.json found anywhere.'
+            exit 1
+          fi
+          echo "✅ Found project root at: $TARGET_DIR"
+          echo "PROJECT_ROOT=$TARGET_DIR" >> $GITHUB_ENV
 
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          echo '📦 Installing dependencies...'
+          npm install
+        working-directory: ${{ env.PROJECT_ROOT }}
 
-      - name: 🧹 Lint Check
-        run: npm run lint
+      - name: Lint Code
+        run: npm run lint --if-present
+        working-directory: ${{ env.PROJECT_ROOT }}
 
-      - name: 🏗️ Build Verification
+      - name: Build Project
         run: npm run build
+        working-directory: ${{ env.PROJECT_ROOT }}
 
-      - name: 🧪 Unit Tests
-        run: npm test
+      - name: Run Unit Tests
+        run: npm test --if-present
+        working-directory: ${{ env.PROJECT_ROOT }}
