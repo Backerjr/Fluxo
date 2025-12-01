@@ -43,6 +43,18 @@ pnpm dev
 pnpm test
 ```
 
+## 🔧 Environment
+
+Create a `.env` in the repo root before running `pnpm dev`. Common keys:
+
+- `DATABASE_URL` — MySQL/TiDB connection string
+- `JWT_SECRET` — secret used to sign session tokens
+- `OAUTH_SERVER_URL` and `VITE_OAUTH_PORTAL_URL` — OAuth base URLs
+- `VITE_APP_ID` — app/client ID for OAuth flows
+- `VITE_ANALYTICS_ENDPOINT` and `VITE_ANALYTICS_WEBSITE_ID` — optional; set to enable Umami analytics
+- `VITE_FRONTEND_FORGE_API_URL` / `VITE_FRONTEND_FORGE_API_KEY` and `BUILT_IN_FORGE_API_URL` / `BUILT_IN_FORGE_API_KEY` — optional Forge API access
+- `OWNER_OPEN_ID` — optional admin override
+
 ## 📱 Mobile Support
 
 Fluxo is fully responsive with:
