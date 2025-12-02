@@ -1,14 +1,14 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import { defineConfig, loadEnv, type Plugin } from "vite";
+import { defineConfig, loadEnv, type PluginOption } from "vite";
 
 const GOOGLE_MAPS_SCRIPT_ID = "google-maps-loader";
 
 const createAnalyticsScriptPlugin = (
   endpoint?: string,
   websiteId?: string
-): Plugin | null => {
+): PluginOption | null => {
   if (!endpoint || !websiteId) return null;
   return {
     name: "inject-analytics-script",
@@ -29,7 +29,7 @@ const createAnalyticsScriptPlugin = (
   };
 };
 
-const createGoogleMapsScriptPlugin = (src?: string): Plugin | null => {
+const createGoogleMapsScriptPlugin = (src?: string): PluginOption | null => {
   if (!src) return null;
   return {
     name: "inject-google-maps-script",
@@ -73,7 +73,7 @@ export default defineConfig(({ mode }) => {
   );
   const mapsPlugin = createGoogleMapsScriptPlugin(mapsSrc);
 
-  const plugins = [react(), tailwindcss()];
+  const plugins: PluginOption[] = [react(), tailwindcss()];
   if (analyticsPlugin) plugins.push(analyticsPlugin);
   if (mapsPlugin) plugins.push(mapsPlugin);
 
