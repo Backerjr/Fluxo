@@ -1,14 +1,15 @@
 // OAuth configuration helper
 // Reads the OAuth portal base URL from Vite env and builds the login endpoint.
 
-function getOAuthPortalUrl() {
+function getOAuthPortalUrl(): string {
   const portalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
 
   if (!portalUrl) {
-    console.warn(
-      "VITE_OAUTH_PORTAL_URL is not set; defaulting OAuth portal URL to current origin."
+    throw new Error(
+      "[Auth] VITE_OAUTH_PORTAL_URL is required but not set.\n" +
+      "Please add it to your .env file:\n" +
+      "VITE_OAUTH_PORTAL_URL=https://oauth.example.com"
     );
-    return `${window.location.origin}/auth/login`;
   }
 
   const normalized = portalUrl.endsWith("/")

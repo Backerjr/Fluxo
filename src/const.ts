@@ -4,15 +4,17 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 export const getLoginUrl = () => {
   const oauthPortalUrl = (import.meta.env.VITE_OAUTH_PORTAL_URL ?? "").trim();
   const appId = (import.meta.env.VITE_APP_ID ?? "").trim();
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
 
   if (!oauthPortalUrl) {
-    console.warn(
-      "[Auth] Missing VITE_OAUTH_PORTAL_URL; falling back to current origin."
+    throw new Error(
+      "[Auth] VITE_OAUTH_PORTAL_URL is required but not set.\n" +
+      "Please add it to your .env file:\n" +
+      "VITE_OAUTH_PORTAL_URL=https://oauth.example.com"
     );
-    return window.location.origin;
   }
+
+  const redirectUri = `${window.location.origin}/api/oauth/callback`;
+  const state = btoa(redirectUri);
 
   try {
     const normalizedBase = oauthPortalUrl.replace(/\/+$/, "");
@@ -26,7 +28,10 @@ export const getLoginUrl = () => {
 
     return url.toString();
   } catch (error) {
-    console.error("[Auth] Invalid VITE_OAUTH_PORTAL_URL", error);
-    return window.location.origin;
+    throw new Error(
+      `[Auth] Invalid VITE_OAUTH_PORTAL_URL: ${oauthPortalUrl}\n` +
+      `Error: ${error instanceof Error ? error.message : String(error)}\n` +
+      "Please ensure the URL is valid (e.g., https://oauth.example.com)"
+    );
   }
 };
