@@ -14,7 +14,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"all" | "enriched" | "processing" | "failed">("all");
 
   // Fetch leads from database
-  const { data: allLeads, isLoading } = trpc.leads.list.useQuery();
+  const { data: allLeads, isLoading } = trpc.leads.list.useQuery({ filter: "" });
 
   // Filter leads based on active tab
   const filteredLeads = ((allLeads || []) as Lead[]).filter((lead) => {

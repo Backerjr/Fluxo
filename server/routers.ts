@@ -22,15 +22,13 @@ export const appRouter = router({
   leads: router({
     list: protectedProcedure
       .input(
-        z
-          .object({
-            filter: z.string().optional().default(""),
-          })
-          .optional()
+        z.object({
+          filter: z.string().optional().default(""),
+        }).default({ filter: "" })
       )
       .query(async ({ ctx, input }) => {
         const allLeads = await getUserLeads(ctx.user.id);
-        const normalizedFilter = (input?.filter ?? "").trim().toLowerCase();
+        const normalizedFilter = (input.filter ?? "").trim().toLowerCase();
 
         if (!normalizedFilter) {
           return allLeads;
