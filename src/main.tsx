@@ -9,22 +9,27 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
-const injectAnalytics = () => {
-  const endpoint = import.meta.env.VITE_ANALYTICS_ENDPOINT;
-  const websiteId = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
-  if (!endpoint || !websiteId) return;
+declare global {
+  interface Window {
+    __MANUS_HOST_DEV__?: boolean;
+    __manusRuntimeReady?: Promise<unknown>;
+  }
+}
 
-  const existing = document.querySelector<HTMLScriptElement>(
-    'script[data-analytics="umami"]'
-  );
-  if (existing) return;
+const ensureManusRuntime = async () => {
+  if (typeof window === "undefined") return;
 
-  const script = document.createElement("script");
-  script.defer = true;
-  script.src = `${endpoint.replace(/\/$/, "")}/umami`;
-  script.dataset.websiteId = websiteId;
-  script.dataset.analytics = "umami";
-  document.body.appendChild(script);
+  if (window.__MANUS_HOST_DEV__ === undefined) {
+    window.__MANUS_HOST_DEV__ = import.meta.env.DEV;
+  }
+
+  if (!window.__manusRuntimeReady) {
+    window.__manusRuntimeReady = import(
+      "vite-plugin-manus-runtime/runtime_dist/manus-runtime.js"
+    );
+  }
+
+  await window.__manusRuntimeReady;
 };
 
 const queryClient = new QueryClient();
@@ -80,19 +85,23 @@ const trpcClient = trpc.createClient({
   ],
 });
 
-injectAnalytics();
+const bootstrap = async () => {
+  await ensureManusRuntime();
 
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-  throw new Error("Root element not found");
-}
+  const rootElement = document.getElementById("root");
+  if (!rootElement) {
+    throw new Error("Root element not found");
+  }
 
-createRoot(rootElement).render(
-  <trpc.Provider client={trpcClient} queryClient={queryClient}>
-    <QueryClientProvider client={queryClient}>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </QueryClientProvider>
-  </trpc.Provider>
-);
+  createRoot(rootElement).render(
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </QueryClientProvider>
+    </trpc.Provider>
+  );
+};
+
+bootstrap();
