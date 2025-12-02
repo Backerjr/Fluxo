@@ -1,20 +1,21 @@
 import { createHTTPHandler } from "@trpc/server/adapters/standalone";
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { IncomingMessage, ServerResponse } from "http";
 import { appRouter } from "../server/routers";
 import { createContext } from "../server/_core/context";
 
 const handler = createHTTPHandler({
   router: appRouter,
-  path: "/api/trpc",
+  // Match the tRPC endpoint path so requests like
+  // /api/trpc/system.health correctly resolve on Vercel
+  basePath: "/api/trpc/",
   createContext({ req, res }) {
-    // Reuse existing context factory with the Vercel req/res shape.
     return createContext({ req: req as any, res: res as any });
   },
 });
 
 export default async function vercelHandler(
-  req: VercelRequest,
-  res: VercelResponse
+  req: IncomingMessage,
+  res: ServerResponse
 ) {
   // Basic CORS headers for browser calls; tighten as needed.
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,7 +26,8 @@ export default async function vercelHandler(
   );
 
   if (req.method === "OPTIONS") {
-    res.status(200).end();
+    res.statusCode = 200;
+    res.end();
     return;
   }
 

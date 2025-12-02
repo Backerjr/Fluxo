@@ -1,21 +1,29 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
+import type { IncomingMessage, ServerResponse } from "http";
 import type { User } from "../../drizzle/schema";
 import { sdk } from "./sdk";
 
+type StandaloneContextOptions =
+  NodeHTTPCreateContextFnOptions<IncomingMessage, ServerResponse>;
+
+type ContextOptions = CreateExpressContextOptions | StandaloneContextOptions;
+
+type RequestLike = ContextOptions["req"];
+type ResponseLike = ContextOptions["res"];
+
 export type TrpcContext = {
-  req: CreateExpressContextOptions["req"];
-  res: CreateExpressContextOptions["res"];
+  req: RequestLike;
+  res: ResponseLike;
   user: User | null;
 };
 
-export async function createContext(
-  opts: CreateExpressContextOptions
-): Promise<TrpcContext> {
+export async function createContext(opts: ContextOptions): Promise<TrpcContext> {
   let user: User | null = null;
 
   try {
     user = await sdk.authenticateRequest(opts.req);
-  } catch (error) {
+  } catch {
     // Authentication is optional for public procedures.
     user = null;
   }
