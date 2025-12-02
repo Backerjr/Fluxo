@@ -20,9 +20,27 @@ export const appRouter = router({
   }),
 
   leads: router({
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return getUserLeads(ctx.user.id);
-    }),
+    list: protectedProcedure
+      .input(
+        z
+          .object({
+            filter: z.string().optional().default(""),
+          })
+          .optional()
+      )
+      .query(async ({ ctx, input }) => {
+        const allLeads = await getUserLeads(ctx.user.id);
+        const normalizedFilter = (input?.filter ?? "").trim().toLowerCase();
+
+        if (!normalizedFilter) {
+          return allLeads;
+        }
+
+        return allLeads.filter(lead => {
+          const haystack = `${lead.name ?? ""} ${lead.company ?? ""}`.toLowerCase();
+          return haystack.includes(normalizedFilter);
+        });
+      }),
     
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
