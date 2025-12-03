@@ -1,7 +1,7 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import type { IncomingMessage, ServerResponse } from "http";
-import type { User } from "../../drizzle/schema";
+import type { User } from "../db/schema";
 import { sdk } from "./sdk";
 
 type StandaloneContextOptions =

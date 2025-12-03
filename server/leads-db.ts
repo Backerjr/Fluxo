@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { InsertLead, leads } from "../drizzle/schema";
+import { InsertLead, leads } from "./db/schema";
 import { getDb } from "./db";
 
 type InMemoryLead = Omit<InsertLead, "id"> & {

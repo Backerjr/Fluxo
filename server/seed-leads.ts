@@ -1,10 +1,11 @@
 /**
  * Seed script to populate the database with sample lead data
- * Run with: tsx server/seed-leads.mjs
+ * Run with: tsx server/seed-leads.ts
  */
 
-import { drizzle } from "drizzle-orm/mysql2";
-import { leads } from "../drizzle/schema.js";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { leads } from "./db/schema";
 
 const mockLeadsData = [
   {
@@ -24,7 +25,7 @@ const mockLeadsData = [
     techStack: JSON.stringify(["React", "Ruby on Rails", "AWS", "Linear"]),
     aiInsight: "Elena recently posted about API infrastructure scaling. She is actively hiring for product roles.",
     mutualConnection: "Sarah Jenkins",
-    userId: 1
+    userId: 1,
   },
   {
     name: "David Chen",
@@ -39,10 +40,10 @@ const mockLeadsData = [
     email: "david@vercel.com",
     linkedin: "linkedin.com/in/davidchen",
     location: "Remote",
-    techStack: JSON.stringify(["Next.js", "Turbo", "Edge Functions"]),
+    techStack: JSON.stringify(["Next.js", "Edge Functions"]),
     aiInsight: "Frequent speaker at Next.js Conf. Recently published a blog post on edge computing performance.",
     mutualConnection: "Guillermo Rauch",
-    userId: 1
+    userId: 1,
   },
   {
     name: "Sarah Miller",
@@ -55,7 +56,7 @@ const mockLeadsData = [
     status: "processing",
     confidence: 45,
     location: "New York, NY",
-    userId: 1
+    userId: 1,
   },
   {
     name: "James Wilson",
@@ -68,7 +69,7 @@ const mockLeadsData = [
     status: "failed",
     confidence: 12,
     aiInsight: "Company website appears to be down or parked. No recent LinkedIn activity found.",
-    userId: 1
+    userId: 1,
   },
   {
     name: "Michael Chang",
@@ -85,7 +86,7 @@ const mockLeadsData = [
     location: "San Francisco, CA",
     techStack: JSON.stringify(["Retool", "Postgres", "Salesforce"]),
     aiInsight: "Recently promoted from Senior Manager. Hiring for 3 AE roles.",
-    userId: 1
+    userId: 1,
   },
   {
     name: "Amanda Torres",
@@ -102,7 +103,7 @@ const mockLeadsData = [
     location: "Singapore",
     techStack: JSON.stringify(["Postgres", "Elixir", "Go"]),
     aiInsight: "Active contributor to open source Postgres extensions.",
-    userId: 1
+    userId: 1,
   },
   {
     name: "Robert Fox",
@@ -114,7 +115,7 @@ const mockLeadsData = [
     avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=faces",
     status: "pending",
     confidence: 0,
-    userId: 1
+    userId: 1,
   },
   {
     name: "Lisa Wong",
@@ -130,8 +131,8 @@ const mockLeadsData = [
     linkedin: "linkedin.com/in/lisawongdesign",
     location: "Los Angeles, CA",
     aiInsight: "Portfolio features extensive work on design systems.",
-    userId: 1
-  }
+    userId: 1,
+  },
 ];
 
 async function seed() {
@@ -142,10 +143,10 @@ async function seed() {
 
   console.log("🌱 Seeding database with sample leads...");
 
-  const db = drizzle(process.env.DATABASE_URL);
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const db = drizzle(pool);
 
   try {
-    // Insert all mock leads
     for (const lead of mockLeadsData) {
       await db.insert(leads).values(lead);
       console.log(`✓ Added lead: ${lead.name} at ${lead.company}`);
@@ -156,6 +157,8 @@ async function seed() {
   } catch (error) {
     console.error("❌ Error seeding database:", error);
     process.exit(1);
+  } finally {
+    await pool.end();
   }
 
   process.exit(0);

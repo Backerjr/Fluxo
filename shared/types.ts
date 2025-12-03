@@ -3,7 +3,7 @@
  * Import shared types from this single entry point.
  */
 
-export type * from "../drizzle/schema";
+export type * from "../server/db/schema";
 export * from "./_core/errors";
 
 /**
