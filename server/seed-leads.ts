@@ -5,7 +5,7 @@
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { leads } from "./db/schema";
+import { leads, type InsertLead } from "./db/schema";
 
 const mockLeadsData = [
   {
@@ -148,7 +148,7 @@ async function seed() {
 
   try {
     for (const lead of mockLeadsData) {
-      await db.insert(leads).values(lead);
+      await db.insert(leads).values(lead as InsertLead);
       console.log(`✓ Added lead: ${lead.name} at ${lead.company}`);
     }
 
