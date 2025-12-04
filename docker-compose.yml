@@ -118,11 +118,3 @@ volumes:
     driver: local
   redis_data:
     driver: local
-
-secrets:
-  MYSQL_ROOT_PASSWORD:
-    file: ./secrets/mysql_root_password.txt
-  MYSQL_PASSWORD:
-    file: ./secrets/mysql_password.txt
-  JWT_SECRET:
-    file: ./secrets/jwt_secret.txt
