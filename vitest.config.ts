@@ -7,7 +7,7 @@ export default defineConfig({
   root: templateRoot,
   resolve: {
     alias: {
-      "@": path.resolve(templateRoot, "src"),
+      "@": path.resolve(templateRoot, "client", "src"),
       "@shared": path.resolve(templateRoot, "shared"),
       "@assets": path.resolve(templateRoot, "attached_assets"),
     },
