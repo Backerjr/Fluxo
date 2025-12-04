@@ -27,7 +27,8 @@ A production-ready lead enrichment dashboard built with React 19, Tailwind CSS 4
 pnpm install
 
 # Set up environment variables
-# Contact repository owner for required environment variables
+cp .env.example .env.production
+# Edit .env.production with your values
 
 # Run database migrations
 pnpm db:push
@@ -36,24 +37,38 @@ pnpm db:push
 pnpm dev
 ```
 
+## 🚀 Deployment
+
+### Quick Deployment
+
+```bash
+# Deploy with PM2 (recommended for production)
+./scripts/deploy.sh pm2
+
+# Deploy with Docker
+./scripts/deploy.sh docker
+
+# Manual deployment
+./scripts/deploy.sh manual
+```
+
+### Detailed Deployment Guide
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive production deployment instructions including:
+- Environment configuration
+- Database setup (AWS RDS, PlanetScale, self-hosted)
+- Docker deployment
+- Manual deployment with PM2
+- CI/CD setup with GitHub Actions
+- Monitoring and maintenance
+- Backup and restore procedures
+
 ## 🧪 Testing
 
 ```bash
 # Run all tests
 pnpm test
 ```
-
-## 🔧 Environment
-
-Create a `.env` in the repo root before running `pnpm dev`. Common keys:
-
-- `DATABASE_URL` — MySQL/TiDB connection string
-- `JWT_SECRET` — secret used to sign session tokens
-- `OAUTH_SERVER_URL` and `VITE_OAUTH_PORTAL_URL` — OAuth base URLs
-- `VITE_APP_ID` — app/client ID for OAuth flows
-- `VITE_ANALYTICS_ENDPOINT` and `VITE_ANALYTICS_WEBSITE_ID` — optional; set to enable Umami analytics
-- `VITE_FRONTEND_FORGE_API_URL` / `VITE_FRONTEND_FORGE_API_KEY` and `BUILT_IN_FORGE_API_URL` / `BUILT_IN_FORGE_API_KEY` — optional Forge API access
-- `OWNER_OPEN_ID` — optional admin override
 
 ## 📱 Mobile Support
 
