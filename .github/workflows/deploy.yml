@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      production_domain:
+        description: "Optional override for the production domain"
+        required: false
+        default: ""
 
 env:
   NODE_VERSION: '22'
@@ -103,9 +108,11 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: build
+    env:
+      DEPLOY_DOMAIN: ${{ github.event.inputs.production_domain || secrets.PRODUCTION_DOMAIN }}
     environment:
       name: production
-      url: https://${{ secrets.PRODUCTION_DOMAIN }}
+      url: https://${{ env.DEPLOY_DOMAIN }}
     
     steps:
       - name: Checkout code
@@ -163,7 +170,7 @@ jobs:
         if: success()
         run: |
           echo "✅ Deployment successful!"
-          echo "Application URL: https://${{ secrets.PRODUCTION_DOMAIN }}"
+          echo "Application URL: https://${{ env.DEPLOY_DOMAIN }}"
 
       - name: Notify deployment failure
         if: failure()
